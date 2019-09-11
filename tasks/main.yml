@@ -4,17 +4,19 @@
     role_comment: "( {{ docker_container_name | default('nexus') }} )"
 
 - name: ensure container is started {{ role_comment }}
-  include_role:
-    name: aem_design.docker_container
-  vars:
+  docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_image }}{% if docker_image %}:{% endif %}{{ docker_image_tag }}"
+    published_ports: "{{ docker_published_ports }}"
+    volumes: "{{ docker_volumes }}"
     env:
-      TZ: "{{ docker.timezone }}"
+      TZ: "{{ docker_timezone }}"
   tags:
     - docker-container
 
 - name: wait until service is ready {{ role_comment }}
   uri:
-    url: "http://{{ nexus_host }}:{{ nexus_port }}"
+    url: "http://{{ service_nexus_host }}:{{ service_nexus_port }}"
     return_content: true
     timeout: 300
   register: service_console

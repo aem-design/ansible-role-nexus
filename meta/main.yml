@@ -27,6 +27,3 @@ galaxy_info:
     - web
     - aemdesign
     - nexus
-
-dependencies:
-  - aem_design.docker_container

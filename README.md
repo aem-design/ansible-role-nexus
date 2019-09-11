@@ -25,7 +25,7 @@ Available variables are listed below, along with default values (see `defaults/m
 | docker_registry_mirror_port   	|          	| 5001                                                                       	| port for to mirror pull requests 	|
 | docker_registry_group_port    	|          	| 5002                                                                       	| port for combined port           	|
 | service_maven_repository_port 	|          	| 8081                                                                       	| port for maven repository        	|
-| service_nexus_address         	|          	| localhost                                                                  	|                                  	|
+| service_nexus_host         	|          	| localhost                                                                  	|                                  	|
 | service_nexus_port            	|          	| 8081                                                                       	|                                  	|
 |                               	|          	|                                                                            	|                                  	|
 | docker_published_ports        	|          	|                                                                            	|                                  	|
@@ -42,19 +42,6 @@ Available variables are listed below, along with default values (see `defaults/m
 | docker_container_group        	|          	| {{ docker_container_name }}                                                	|                                  	|
 | docker_container_groupid      	|          	| 10002                                                                      	|                                  	|
 |                               	|          	|                                                                            	|                                  	|
-| iptable_rules                 	|          	|                                                                            	|                                  	|
-|                               	|          	| - port: "{{ docker_registry_port | default('5000') }}"                     	|                                  	|
-|                               	|          	| comment: "docker_registry_port"                                            	|                                  	|
-|                               	|          	| - port: "{{ service_maven_repository_port | default('8081') }}"            	|                                  	|
-|                               	|          	| comment: "service_maven_repository_port"                                   	|                                  	|
-|                               	|          	| - port: "{{ docker_registry_mirror_port | default('5001') }}"              	|                                  	|
-|                               	|          	| comment: "docker_registry_mirror_port"                                     	|                                  	|
-|                               	|          	| - port: "{{ docker_registry_group_port | default('5002') }}"               	|                                  	|
-|                               	|          	| comment: "docker_registry_group_port"                                      	|                                  	|
-|                               	|          	|                                                                            	|                                  	|
-| nexus_host                    	|          	| {{ service_nexus_address | default('localhost') }}                          	|                                  	|
-| nexus_port                    	|          	| {{ service_nexus_port | default('8081') }}                                 	|                                  	|
-
 
 ## Dependencies
 
