@@ -9,6 +9,7 @@
     image: "{{ docker_image }}{% if docker_image %}:{% endif %}{{ docker_image_tag }}"
     published_ports: "{{ docker_published_ports }}"
     volumes: "{{ docker_volumes }}"
+    docker_host: "{{ docker_host }}"
     env:
       TZ: "{{ docker_timezone }}"
   tags:
