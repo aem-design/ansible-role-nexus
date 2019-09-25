@@ -26,3 +26,5 @@ docker_container_user: "{{ docker_container_name }}"
 docker_container_userid: 10002
 docker_container_group: "{{ docker_container_name }}"
 docker_container_groupid: 10002
+
+docker_host: "unix://var/run/docker.sock"    # host where to run the docker container for executing pyaem2 commands
