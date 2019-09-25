@@ -34,3 +34,4 @@
         name: "{{ test_container_name }}"
         state: absent
         force_kill: true
+        docker_host: "unix://tmp/docker.sock"
