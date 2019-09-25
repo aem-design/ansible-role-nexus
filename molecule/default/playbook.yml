@@ -5,12 +5,9 @@
   vars:
     local_role_name: "ansible-role-nexus"
     role_name: "{% if lookup('env','ROLE_NAME_FULL') %}{{ lookup('env','ROLE_NAME_FULL') }}{% else %}{{ local_role_name }}{% endif %}"
+    test_container_name: "{{ local_role_name }}-test"
 
   pre_tasks:
-    - name: update apt cache.
-      apt: update_cache=yes cache_valid_time=600
-      when: ansible_os_family == 'Debian'
-
     - name: get docker host ip
       become: true
       shell: |
@@ -25,13 +22,15 @@
     - {
       role: "{{ role_name }}",
       service_nexus_host: "{{ dockerhost_ip.stdout }}",
+      docker_container_name: "{{ test_container_name }}",
       docker_volumes: [],
-      debug_hide: false
+      debug_hide: false,
+      docker_host: "unix://tmp/docker.sock"
     }
 
   post_tasks:
     - name: remove new container
       docker_container:
-        name: "{{ docker_container_name }}"
+        name: "{{ test_container_name }}"
         state: absent
         force_kill: true
