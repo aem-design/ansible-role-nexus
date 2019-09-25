@@ -27,11 +27,3 @@
       debug_hide: false,
       docker_host: "unix://tmp/docker.sock"
     }
-
-  post_tasks:
-    - name: remove new container
-      docker_container:
-        name: "{{ test_container_name }}"
-        state: absent
-        force_kill: true
-        docker_host: "unix://tmp/docker.sock"
