@@ -19,7 +19,7 @@
   uri:
     url: "http://{{ service_nexus_host }}:{{ service_nexus_port }}"
     return_content: true
-    timeout: 300
+    timeout: 5
   register: service_console
   until: service_console.content.find("Nexus Repository Manager") != -1
   delay: "{{ wait_delay | default(5) }}"
