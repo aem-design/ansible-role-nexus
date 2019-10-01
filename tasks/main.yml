@@ -17,10 +17,82 @@
 
 - name: wait until service is ready {{ role_comment }}
   uri:
-    url: "http://{{ service_nexus_host }}:{{ service_nexus_port }}"
+    url: "{{ nexus_url }}"
     return_content: true
     timeout: 5
   register: service_console
   until: service_console.content.find("Nexus Repository Manager") != -1
   delay: "{{ wait_delay | default(5) }}"
   retries: 360
+
+- name: get generated nexus password
+  docker_execute:
+    docker_container: "{{ docker_container_name }}"
+    docker_exec_command: "cat /nexus-data/admin.password"
+    docker_host: "{{ docker_host }}"
+  register: new_nexus_password
+
+- name: set changeAdminPassword script name
+  set_fact:
+    script_changeAdminPassword: "changeAdminPassword-{{ ansible_date_time.iso8601_micro | to_uuid }}"
+
+- name: create changeAdminPassword script
+  uri:
+    url: "{{ nexus_url_api_script }}"
+    method: "POST"
+    user: "{{ nexus_user }}"
+    password: "{{ new_nexus_password.msg }}"
+    force_basic_auth: "true"
+    body:
+      name: "{{ script_changeAdminPassword }}"
+      content: "def user = security.securitySystem.getUser('{{ nexus_user }}'); \
+                security.securitySystem.updateUser(user); \
+                security.securitySystem.changePassword('{{ nexus_user }}','{{ nexus_password }}')"
+      type: "groovy"
+    body_format: "json"
+    return_content: "true"
+    status_code: 204
+    timeout: 5
+  register: nexus_change_password_create
+  delay: "{{ wait_delay | default(5) }}"
+
+- name: debug nexus_change_password_create
+  debug:
+    msg:
+      - "{{ nexus_change_password_create }}"
+
+- name: run changeAdminPassword script
+  uri:
+    url: "{{ nexus_url_api_script }}/{{ script_changeAdminPassword }}/run"
+    method: "POST"
+    user: "{{ nexus_user }}"
+    password: "{{ new_nexus_password.msg }}"
+    force_basic_auth: "true"
+    headers:
+      Content-Type: "text/plain"
+    timeout: 5
+    status_code: 200
+  register: nexus_change_password_create_run
+  delay: "{{ wait_delay | default(5) }}"
+
+- name: debug nexus_change_password_create_run
+  debug:
+    msg:
+      - "{{ nexus_change_password_create }}"
+
+- name: delete changeAdminPassword script
+  uri:
+    url: "{{ nexus_url_api_script }}/{{ script_changeAdminPassword }}"
+    method: "DELETE"
+    user: "{{ nexus_user }}"
+    password: "{{ nexus_password }}"
+    force_basic_auth: "true"
+    timeout: 5
+    status_code: 204
+  register: nexus_change_password_create_delete
+  delay: "{{ wait_delay | default(5) }}"
+
+- name: debug nexus_change_password_create delete
+  debug:
+    msg:
+      - "{{ nexus_change_password_create_delete }}"
