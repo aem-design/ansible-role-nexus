@@ -18,6 +18,7 @@ nexus_user: "{{ service_nexus_user | default('admin') }}"                       
 nexus_password: "{{ service_nexus_password | default('admin123') }}"                                                    # Nexus admin password( default: admin123)
 nexus_url: "http://{{ service_nexus_host }}:{{ service_nexus_port }}"                                                   # Nexus url
 nexus_url_api_script: "{{ nexus_url }}/service/rest/v1/script"                                                          # Nexus script API base url
+nexus_url_api_login: "{{ nexus_url }}/service/rapture/session"                                                          # Nexus login API to test password
 
 docker_published_ports:                                                                                                 # docker published ports
   - "0.0.0.0:{{ nexus_registry_port | default('5000') }}:5000/tcp"
